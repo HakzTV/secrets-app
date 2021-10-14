@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express")
 const bodyParser = require("body-parser")
 const ejs = require('ejs')
@@ -11,6 +12,10 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 app.set('view engine', 'ejs');
+
+// console.log(process.env.SECRET)
+
+// DB Connectin
 const url = "mongodb://localhost:27017/userDB";
 const options = {
   useNewUrlParser: true,
@@ -26,14 +31,14 @@ const userSchema =new mongoose.Schema({
 });
 
 
-
 // Level 2 is right here
 // var secret = process.env.SOME_LONG_UNGUESSABLE_STRING;
-const secret = "Telvinsdirtysecret";
+// Check 
 // This encrypts the whole database.
 // But when you add a option then it encrypts it
 // The plugin her eis used to encrypt the password fir
-userSchema.plugin(encrypt, { secret: secret , encryptedFields: ['password']});
+// Level 3 Environment Variable.
+userSchema.plugin(encrypt, { secret: process.env.SECRET , encryptedFields: ['password']});
 
 const User = new mongoose.model("User", userSchema)
 
@@ -96,7 +101,9 @@ app.post('/login', function(req,res){
 
 
 
-
+// Level 1 = Username and password 
+// Level 2 = Encryption
+// Level 3 = Environment variables
 
 
 
