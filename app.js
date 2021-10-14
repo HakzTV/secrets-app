@@ -27,6 +27,13 @@ const userSchema =new mongoose.Schema({
 
 
 
+// Level 2 is right here
+// var secret = process.env.SOME_LONG_UNGUESSABLE_STRING;
+const secret = "Telvinsdirtysecret";
+// This encrypts the whole database.
+// But when you add a option then it encrypts it
+// The plugin her eis used to encrypt the password fir
+userSchema.plugin(encrypt, { secret: secret , encryptedFields: ['password']});
 
 const User = new mongoose.model("User", userSchema)
 
