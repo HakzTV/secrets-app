@@ -1,9 +1,12 @@
 require('dotenv').config();
 const express = require("express")
 const bodyParser = require("body-parser")
+// Level 4
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
 const mongoose = require("mongoose")
 // Level 3 included hashing
-const md5 = require("md5")
+// const md5 = require("md5")
 // const encrypt = require("mongoose-encryption")
 const app = express()
 const port = 3000 || process.env.PORT
@@ -69,36 +72,43 @@ app.get('/submit', (req, res)=>{
 // Post requests
 // This was just level  one 
 app.post("/register", function(req, res){
-    const newUser = new User({
-    email: req.body.username,
-    password: md5(req.body.password)
-    })
-
-    newUser.save(function(err){
-        if(err){
-            console.log(err)
-        }else{
-            res.render("secrets")
-        }
-    })
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        // Store hash in your password DB.
+        const newUser = new User({
+            email: req.body.username,
+            password: hash
+            })
+        
+            newUser.save(function(err){
+                if(err){
+                    console.log(err)
+                }else{
+                    res.render("secrets")
+                }
+            });
+    });
+    
 })
 
 // Level one 
+
 app.post('/login', function(req,res){
     const username = req.body.username;
-    const password = md5(req.body.password);
+    const password = req.body.password;
 
     User.findOne({email: username}, function(err, foundUser){
         if(err){
             console.log(err)
         }else{
             if(foundUser){
-                if(foundUser.password === password){
-                    res.render("secrets")
-                }
+                bcrypt.compare(password, foundUser.password , function (err, results){
+                    if(results=== true){
+                        res.render("secrets")
+                    }
+                });
             }
         }
-    })
+    });
 });
 // app.get('/', (req, res)=>{
 //     res.render('submit')
