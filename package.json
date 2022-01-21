@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon app.js"
   },
-  "author": "Telvin Varfley",
+  "author": "Telvin Varfley", 
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
